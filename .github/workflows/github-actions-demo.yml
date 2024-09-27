@@ -3,8 +3,6 @@ run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 
 on:
   push:
-  issues:
-    types: [opened]
 
 jobs:
   # Existing job for push event
@@ -15,23 +13,20 @@ jobs:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      
       - name: Check out repository code
         uses: actions/checkout@v4
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+
+      - name: Count the number of pushes (commits)
+        run: |
+          push_count=$(git rev-list --count HEAD)
+          echo "This is the $push_count-th push to the repository!"
+        
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
 
-  # New job for commenting on new issues
-  comment-on-issue:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'issues'  # Ensure this job runs only on 'issues' events
-    steps:
-    - name: Comment on Issue
-      uses: ben-z/actions-comment-on-issue@1.0.3
-      with:
-        message: "Gentle reminder:\n* Did you go through all of the troubleshooting steps outlined in README.md also, wtf is this?"
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            
+      - run: echo "🍏 This job's status is ${{ job.status }}."
