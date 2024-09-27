@@ -29,16 +29,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'issues'  # Ensure this job runs only on 'issues' events
     steps:
-      - name: Add Comment to Issue
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}  # Ensure GitHub API access
-          script: |
-            const issueNumber = context.payload.issue.number;
-            const message = `🚀 Thank you for opening this issue! But excuse me, wtf.`;
-            await github.issues.createComment({
-              issue_number: issueNumber,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: message,
-            });
+    - name: Comment on Issue
+      uses: ben-z/actions-comment-on-issue@1.0.3
+      with:
+        message: "Gentle reminder:\n* Did you go through all of the troubleshooting steps outlined in README.md also, wtf is this?"
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            
