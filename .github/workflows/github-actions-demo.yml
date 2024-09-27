@@ -1,7 +1,6 @@
 name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 
-# Add both 'push' and 'issues' events
 on:
   push:
   issues:
@@ -33,10 +32,11 @@ jobs:
       - name: Add Comment to Issue
         uses: actions/github-script@v6
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}  # Ensure GitHub API access
           script: |
             const issueNumber = context.payload.issue.number;
-            const message = `🚀 Thank you for opening this issue! We're on it and will get back to you as soon as possible. Stay tuned!`;
-            github.issues.createComment({
+            const message = `🚀 Thank you for opening this issue! But excuse me, wtf.`;
+            await github.issues.createComment({
               issue_number: issueNumber,
               owner: context.repo.owner,
               repo: context.repo.repo,
