@@ -1,9 +1,17 @@
 name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+
+# Add both 'push' and 'issues' events
+on:
+  push:
+  issues:
+    types: [opened]
+
 jobs:
+  # Existing job for push event
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push'  # Ensure this job runs only on 'push' events
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
@@ -16,3 +24,21 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
+
+  # New job for commenting on new issues
+  comment-on-issue:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issues'  # Ensure this job runs only on 'issues' events
+    steps:
+      - name: Add Comment to Issue
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issueNumber = context.payload.issue.number;
+            const message = `🚀 Thank you for opening this issue! We're on it and will get back to you as soon as possible. Stay tuned!`;
+            github.issues.createComment({
+              issue_number: issueNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message,
+            });
